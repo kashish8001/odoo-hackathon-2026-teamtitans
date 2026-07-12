@@ -384,6 +384,51 @@ export const analyticsApi = {
         }
       }
     };
+  },
+
+  async getDriverPerformance() {
+    return [
+      {
+        driver_id: 1,
+        driver_name: "Alex Morgan",
+        license_number: "DL-1234567890",
+        license_expiry: "2029-05-12",
+        completion_rate: 98,
+        safety_score: 95,
+        complaint_count: 0,
+        total_trips: 45
+      },
+      {
+        driver_id: 2,
+        driver_name: "Priya Nair",
+        license_number: "DL-0987654321",
+        license_expiry: "2028-11-20",
+        completion_rate: 94,
+        safety_score: 92,
+        complaint_count: 1,
+        total_trips: 38
+      },
+      {
+        driver_id: 3,
+        driver_name: "Ravi Mehta",
+        license_number: "DL-5555666677",
+        license_expiry: "2030-01-15",
+        completion_rate: 91,
+        safety_score: 89,
+        complaint_count: 2,
+        total_trips: 52
+      },
+      {
+        driver_id: 4,
+        driver_name: "John Doe",
+        license_number: "DL-9999000011",
+        license_expiry: "2027-08-04",
+        completion_rate: 85,
+        safety_score: 88,
+        complaint_count: 4,
+        total_trips: 29
+      }
+    ];
   }
 };
 
