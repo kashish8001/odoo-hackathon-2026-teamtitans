@@ -1,22 +1,34 @@
 "use client";
+
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { authApi, setAuthToken, removeAuthToken } from "@/lib/api";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState({
-        first_name: "John",
-        last_name: "Doe",
-        email: "john.doe@teamtitans.com",
-        role: "admin"
-    });
-    const [loading, setLoading] = useState(false);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Initial mock login check
+    // Check if user is already logged in
     useEffect(() => {
-        if (typeof window !== 'undefined' && !localStorage.getItem('access_token')) {
-            setAuthToken('mock-jwt-token-12345');
+        const checkAuth = async () => {
+            try {
+                const userData = await authApi.getCurrentUser();
+                setUser(userData);
+            } catch (err) {
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (
+            typeof window !== "undefined" &&
+            localStorage.getItem("access_token")
+        ) {
+            checkAuth();
+        } else {
+            setLoading(false);
         }
     }, []);
 
@@ -24,12 +36,19 @@ export function AuthProvider({ children }) {
         setLoading(true);
         try {
             const response = await authApi.login(email, password);
-            setUser({
-                first_name: "John",
-                last_name: "Doe",
-                email: email || "john.doe@teamtitans.com",
-                role: "admin"
-            });
+
+            if (response.access_token) {
+                setAuthToken(response.access_token);
+
+                try {
+                    const userData = await authApi.getCurrentUser();
+                    setUser(userData);
+                } catch (err) {
+                    // Backend may not have /auth/me yet
+                    setUser({ email });
+                }
+            }
+
             return response;
         } finally {
             setLoading(false);
@@ -42,6 +61,7 @@ export function AuthProvider({ children }) {
 
     const logout = useCallback(() => {
         removeAuthToken();
+        authApi.logout();
         setUser(null);
     }, []);
 
@@ -54,13 +74,19 @@ export function AuthProvider({ children }) {
         logout,
     };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth() {
     const context = useContext(AuthContext);
+
     if (!context) {
         throw new Error("useAuth must be used within an AuthProvider");
     }
+
     return context;
 }
