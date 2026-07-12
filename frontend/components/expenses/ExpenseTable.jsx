@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { expensesApi } from "@/lib/api";
+import { expensesApi } from "@/lib/api_mock";
 
 const statusStyle = {
     'Done': { background: "rgba(16, 185, 129, 0.1)", color: "#10B981" },

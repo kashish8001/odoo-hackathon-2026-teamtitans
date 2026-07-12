@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { tripsApi } from "@/lib/api";
+import { tripsApi } from "@/lib/api_mock";
 
 // Map API status to display format
 const statusMap = {

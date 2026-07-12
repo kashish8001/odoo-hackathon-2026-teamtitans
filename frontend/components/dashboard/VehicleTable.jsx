@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { vehiclesApi } from "@/lib/api";
+import { vehiclesApi } from "@/lib/api_mock";
 
 // Map API status to display format
 const statusMap = {

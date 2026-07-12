@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { expensesApi, vehiclesApi, tripsApi } from '@/lib/api';
+import { expensesApi, vehiclesApi, tripsApi } from '@/lib/api_mock';
 
 const expenseTypes = ["fuel", "maintenance", "toll", "parking", "fine", "insurance", "other"];
 
