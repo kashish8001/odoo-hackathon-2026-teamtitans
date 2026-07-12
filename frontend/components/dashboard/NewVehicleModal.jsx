@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { vehiclesApi } from "@/lib/api_mock";
+import { vehiclesApi } from "@/lib/api";
 
 const initialForm = {
   licensePlate: "",

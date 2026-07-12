@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { analyticsApi } from "@/lib/api_mock";
+import { analyticsApi } from "@/lib/api";
 
 export default function PerformanceTable() {
     const [performanceData, setPerformanceData] = useState([]);

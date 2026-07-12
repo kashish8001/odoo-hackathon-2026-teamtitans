@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { expensesApi, vehiclesApi, tripsApi } from '@/lib/api_mock';
+import { expensesApi, vehiclesApi, tripsApi } from '@/lib/api';
 
 const expenseTypes = ["fuel", "maintenance", "toll", "parking", "fine", "insurance", "other"];
 
@@ -24,9 +24,10 @@ export default function NewExpenseForm({ closeModal, onSuccess }) {
       tripsApi.getAll({ limit: 50 }).catch(() => ({ trips: [] })),
     ]).then(([vehicleRes, tripRes]) => {
       setVehicles(vehicleRes || []);
-      setTrips((tripRes.trips || tripRes || []).map(t => ({
+      const list = tripRes.data || tripRes || [];
+      setTrips(list.map(t => ({
         id: t.id,
-        label: `Trip #${t.id} - ${t.origin_address || 'N/A'} → ${t.destination_address || 'N/A'}`,
+        label: `Trip #${t.id} - ${t.origin || t.origin_address || 'N/A'} → ${t.destination || t.destination_address || 'N/A'}`,
       })));
     });
   }, []);

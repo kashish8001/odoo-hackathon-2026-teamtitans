@@ -5,7 +5,7 @@ import Topbar from "../../components/dashboard/Topbar";
 import NewVehicleModal from "../../components/dashboard/NewVehicleModal";
 import VehicleTable from "../../components/dashboard/VehicleTable";
 import StatCard from "../../components/dashboard/StatCard";
-import { analyticsApi } from "@/lib/api_mock";
+import { analyticsApi } from "@/lib/api";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 export default function VehicleRegistryPage() {
