@@ -1,5 +1,5 @@
 /**
- * Mock TransitOps API Client
+ * Mock FleetFlow API Client
  * Operates on localStorage to allow a fully functional frontend without a running backend.
  */
 
@@ -93,6 +93,48 @@ const defaultVehicles = [
   }
 ];
 
+// Initialize mock trips database
+const mockTrips = [
+  { id: 1, origin_address: "Mumbai", destination_address: "Pune", driver_name: "Alex Morgan", distance_km: 148 },
+  { id: 2, origin_address: "Ahmedabad", destination_address: "Surat", driver_name: "Priya Nair", distance_km: 263 },
+  { id: 3, origin_address: "Delhi", destination_address: "Jaipur", driver_name: "Ravi Mehta", distance_km: 272 },
+  { id: 4, origin_address: "Bangalore", destination_address: "Chennai", driver_name: "John Doe", distance_km: 345 }
+];
+
+// Initialize mock expenses database
+const defaultExpenses = [
+  {
+    id: 1,
+    trip_id: 1,
+    driver_name: "Alex Morgan",
+    distance_km: 148,
+    expense_type: "fuel",
+    amount: 3200,
+    description: "Refueled at highway petrol pump",
+    expense_date: "2026-07-10"
+  },
+  {
+    id: 2,
+    trip_id: 2,
+    driver_name: "Priya Nair",
+    distance_km: 263,
+    expense_type: "toll",
+    amount: 450,
+    description: "National Highway toll plaza",
+    expense_date: "2026-07-11"
+  },
+  {
+    id: 3,
+    trip_id: 3,
+    driver_name: "Ravi Mehta",
+    distance_km: 272,
+    expense_type: "other",
+    amount: 1200,
+    description: "Parking and loading helper charges",
+    expense_date: "2026-07-11"
+  }
+];
+
 function getMockVehicles(): any[] {
   const dataStr = getLocalStorageItem("mock_vehicles", JSON.stringify(defaultVehicles));
   try {
@@ -105,6 +147,21 @@ function getMockVehicles(): any[] {
 function saveMockVehicles(vehicles: any[]) {
   if (isBrowser) {
     localStorage.setItem("mock_vehicles", JSON.stringify(vehicles));
+  }
+}
+
+function getMockExpenses(): any[] {
+  const dataStr = getLocalStorageItem("mock_expenses", JSON.stringify(defaultExpenses));
+  try {
+    return JSON.parse(dataStr);
+  } catch (e) {
+    return defaultExpenses;
+  }
+}
+
+function saveMockExpenses(expenses: any[]) {
+  if (isBrowser) {
+    localStorage.setItem("mock_expenses", JSON.stringify(expenses));
   }
 }
 
@@ -233,10 +290,62 @@ export const vehiclesApi = {
   },
 
   async getOptions() {
-    return {
-      vehicle_types: ["truck", "van", "trailer", "tanker", "pickup", "bus", "other"],
-      fuel_types: ["diesel", "petrol", "cng", "electric", "hybrid"]
+    const list = getMockVehicles();
+    return list.map(v => ({
+      id: v.id,
+      license_plate: v.license_plate,
+      label: `${v.license_plate} - ${v.make} ${v.model}`
+    }));
+  }
+};
+
+// ============================================================================
+// TRIPS API
+// ============================================================================
+export const tripsApi = {
+  async getAll(params: any = {}) {
+    return mockTrips;
+  }
+};
+
+// ============================================================================
+// EXPENSES API
+// ============================================================================
+export const expensesApi = {
+  async getAll() {
+    return getMockExpenses();
+  },
+
+  async create(data: any) {
+    const list = getMockExpenses();
+    const newId = list.length > 0 ? Math.max(...list.map(e => e.id)) + 1 : 1;
+
+    // Find driver and distance from mock trips
+    let driver_name = "System User";
+    let distance_km = 0;
+    if (data.trip_id) {
+      const trip = mockTrips.find(t => t.id === Number(data.trip_id));
+      if (trip) {
+        driver_name = trip.driver_name;
+        distance_km = trip.distance_km;
+      }
+    }
+
+    const newExpense = {
+      id: newId,
+      trip_id: data.trip_id ? Number(data.trip_id) : null,
+      vehicle_id: Number(data.vehicle_id),
+      expense_type: data.expense_type,
+      amount: data.amount,
+      description: data.description || "",
+      expense_date: data.expense_date,
+      driver_name,
+      distance_km
     };
+
+    list.push(newExpense);
+    saveMockExpenses(list);
+    return newExpense;
   }
 };
 
@@ -271,7 +380,7 @@ export const analyticsApi = {
       },
       trips: {
         by_status: {
-          scheduled: Math.max(0, total - in_shop) // realistic mock
+          scheduled: Math.max(0, total - in_shop)
         }
       }
     };
@@ -281,5 +390,7 @@ export const analyticsApi = {
 export default {
   auth: authApi,
   vehicles: vehiclesApi,
+  trips: tripsApi,
+  expenses: expensesApi,
   analytics: analyticsApi
 };
