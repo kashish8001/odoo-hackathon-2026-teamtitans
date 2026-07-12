@@ -13,8 +13,7 @@ export default function ProtectedRoute({ children }) {
 
     useEffect(() => {
         if (!loading && !isAuthenticated) {
-            // In a real app we'd redirect:
-            // router.replace("/login");
+            router.replace("/login");
         }
     }, [loading, isAuthenticated, router]);
 

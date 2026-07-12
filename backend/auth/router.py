@@ -13,6 +13,8 @@ from auth.security import (
     hash_password,
 )
 from auth.jwt import create_access_token
+from auth.dependencies import AnyAuthenticatedUser
+from auth.schemas import UserResponse
 
 from db.users import (
     get_user_by_email,
@@ -106,3 +108,8 @@ def logout():
     return {
         "message": "Logged out successfully"
     }
+
+
+@router.get("/me", response_model=UserResponse)
+def get_me(current_user: UserResponse = AnyAuthenticatedUser):
+    return current_user

@@ -3,8 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from db.database import engine, Base
 from db.users import User
+from db.vehicles import Vehicle
+from db.drivers import Driver
+from db.trips import Trip
 
 from auth.router import router as auth_router
+from auth.router_trips import router as trips_router
+from auth.router_vehicles import router as vehicles_router
+from auth.router_drivers import router as drivers_router
 
 
 # Create database tables
@@ -14,7 +20,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="TransitOps Backend",
     version="1.0.0",
-    description="Authentication API for Odoo Hackathon 2026"
+    description="Authentication and Transport Operations API for Odoo Hackathon 2026"
 )
 
 
@@ -37,6 +43,10 @@ app.include_router(
     prefix="/auth",
     tags=["Authentication"]
 )
+
+app.include_router(trips_router)
+app.include_router(vehicles_router)
+app.include_router(drivers_router)
 
 
 @app.get("/")

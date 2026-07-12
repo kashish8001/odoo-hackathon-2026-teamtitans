@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { tripsApi } from "@/lib/api_mock";
+import { tripsApi } from "@/lib/api";
 
 // Map API status to display format
 const statusMap = {
@@ -37,8 +37,8 @@ export default function TripTable() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
 
-  const fetchTrips = async () => {
-    setLoading(true);
+  const fetchTrips = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     setError(null);
     try {
       const response = await tripsApi.getAll();
@@ -61,10 +61,11 @@ export default function TripTable() {
   };
 
   useEffect(() => {
-    fetchTrips();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchTrips(false);
   }, []);
 
-  const handleRowClick = (trip) => { /* TODO: open trip detail */ };
+  const handleRowClick = () => { /* TODO: open trip detail */ };
 
   const filtered = tripData.filter(
     (t) =>
