@@ -1,24 +1,17 @@
-from passlib.context import CryptContext
+import bcrypt
 
 # =============================================================================
-# Password Hashing Configuration
-# =============================================================================
-
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
-
-
-# =============================================================================
-# Hash Password
+# Password Hashing Configuration & Helpers
 # =============================================================================
 
 def hash_password(password: str) -> str:
     """
     Hash a plain text password before storing it in PostgreSQL.
     """
-    return pwd_context.hash(password)
+    password_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    return hashed.decode('utf-8')
 
 
 # =============================================================================
@@ -32,10 +25,12 @@ def verify_password(
     """
     Compare plain password with bcrypt hash.
     """
-    return pwd_context.verify(
-        plain_password,
-        hashed_password,
-    )
+    plain_bytes = plain_password.encode('utf-8')
+    hashed_bytes = hashed_password.encode('utf-8')
+    try:
+        return bcrypt.checkpw(plain_bytes, hashed_bytes)
+    except Exception:
+        return False
 
 
 # =============================================================================
