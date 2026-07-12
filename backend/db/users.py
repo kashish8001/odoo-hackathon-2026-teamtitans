@@ -27,7 +27,7 @@ class User(Base):
 
     role = Column(
         String,
-        default="user"
+        default="viewer"
     )
 
     first_name = Column(
@@ -53,12 +53,16 @@ def create_user(
     db: Session,
     email: str,
     password_hash: str,
-    role: str = "user"
+    first_name: str = "",
+    last_name: str = "",
+    role: str = "viewer",
 ):
     user = User(
         email=email,
         password_hash=password_hash,
-        role=role
+        first_name=first_name,
+        last_name=last_name,
+        role=role,
     )
 
     db.add(user)

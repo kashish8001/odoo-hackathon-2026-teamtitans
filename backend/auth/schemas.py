@@ -81,3 +81,16 @@ class LoginResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+class RegisterRequest(BaseModel):
+    email: EmailStr
+    password: str
+    first_name: str
+    last_name: str
+    role: Literal[
+        "admin",
+        "manager",
+        "dispatcher",
+        "driver",
+        "viewer"
+    ] = "viewer"
