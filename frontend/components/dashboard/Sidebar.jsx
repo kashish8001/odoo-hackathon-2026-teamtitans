@@ -70,9 +70,9 @@ export default function Sidebar() {
     <aside style={styles.sidebar}>
       {/* Logo */}
       <div style={styles.logo}>
-        <div style={styles.logoMark}>FF</div>
+        <div style={styles.logoMark}>TO</div>
         <div>
-          <div style={styles.logoText}>Fleet Flow</div>
+          <div style={styles.logoText}>TransitOps</div>
           <div style={styles.logoSub}>Fleet Management</div>
         </div>
       </div>

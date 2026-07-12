@@ -279,7 +279,7 @@ export default function LoginPage() {
 
                 {/* Bottom text */}
                 <p className="text-center text-xs text-gray-500 mt-6">
-                    &copy; 2026 FleetFlow. All rights reserved.
+                    &copy; 2026 TransitOps. All rights reserved.
                 </p>
             </div>
         </div>
